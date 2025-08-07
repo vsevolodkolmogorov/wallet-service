@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: vsevolodkolmogorov
+      changes:
+        - createTable:
+            tableName: wallet
+            columns:
+              - column:
+                  name: wallet_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: balance
+                  type: decimal(19,2)
+              - column:
+                  name: version
+                  type: bigint
+        - createIndex:
+            tableName: wallet
+            indexName: wallet_wallet_id_idx
+            columns:
+              - column:
+                  name: wallet_id
+            unique: true
+
+  - changeSet:
+      id: 2
+      author: vsevolodkolmogorov
+      changes:
+        - createTable:
+            tableName: operation
+            columns:
+              - column:
+                  name: operation_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: wallet_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: operation_type
+                  type: varchar(20)
+              - column:
+                  name: amount
+                  type: decimal(19,2)
+        - addForeignKeyConstraint:
+            baseTableName: operation
+            baseColumnNames: wallet_id
+            referencedTableName: wallet
+            referencedColumnNames: wallet_id
+            constraintName: fk_operation_wallet
+        - createIndex:
+            tableName: operation
+            indexName: operation_wallet_id_idx
+            columns:
+              - column:
+                  name: wallet_id
